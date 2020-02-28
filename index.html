@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+
+<head lang="pl">
+
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>pytanka</title>
+
+</head>
+
+<body>
+
+	<h2>Formularz kontaktowy</h2>
+	<form action="send_form.php" method="post" id="contact_form">
+		<div><label for="nick">Podaj swój anonimowy nick</label></div>
+		<div><input type="text" name="nick" id="nick"></div>
+		<div><label for="pytanko">Zadaj pytanie</label></div>
+		<div><textarea name="pytanko" id="pytanko"></textarea></div>
+
+		<div><button id="koniec">Wyślij</button></div>
+
+		<div id="send_form_status"></div>
+
+	</form>
+
+	<script>
+		const form = document.getElementById('contact_form');
+		const nick = document.getElementById('nick');
+		const pytanko = document.getElementById('pytanko');
+		const sendStatus = document.getElementById('send_form_status');
+
+		form.addEventListener('submit', event => {
+			event.preventDefault();
+			fetch('send_form.php', {
+					headers: {
+						'Accept': 'application/json',
+						'Content-Type': 'application/x-www-form-urlencoded'
+					},
+					method: 'POST',
+					body: `nick=${nick.value}&pytanko=${pytanko.value}`
+				})
+				.then(response => response.json())
+				.then(data => {
+					sendStatus.innerHTML = data.msg;
+					if (data.status == 1) {
+						form.reset();
+					}
+				});
+		});
+	</script>
+
+</body>
+
+</html>
